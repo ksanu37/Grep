@@ -5,13 +5,24 @@ using namespace std;
 bool getPattern(string str, string s) { 
     bool flag = false; 
     for (int i = 0; i < str.length(); i++) { 
+        if(flag)
+         	return true;
         if ((str.substr(i, s.length()) == s) ) { 
-        	if(str[i+s.length()]==' ' || str[i+s.length()]=='.'){
-            	return true; 
-            }
+            flag = true;     // Assuming this pattern matches the conditions
+            if(i==0 && str[i+s.length()]!=' ')
+            		flag =  false;
+            else if(i>0){  // If not at start of line, previous char should be a space and next char should either be space, dot or null char.
+				if(str[i-1]!=' '){
+					flag =  false; 
+				}     // Not the exact word as the previous character is not space
+				if(str[i+s.length()]!=' ' && str[i+s.length()]!='.' && str[i+s.length()]!='\0'){
+					flag = false;
+				}
+			}
         } 
     } 
-    return false;
+    
+    return flag;
 }
 
 /* A method to check if the pattern is a substring of the line or not */
@@ -116,8 +127,11 @@ int main(int argc, char* argv[]){
 	         	if(options[1]==1)  /* Case -v */
 	         		check = check & !getOccurance(line,pattern);
 	         	
-	         	if(options[2]==1) /* Case -w */
+	         	if(options[2]==1){ /* Case -w */
 	         		check = check & getPattern(line, pattern);
+	         		if(check)
+	         			cout<<line<<endl;
+	         	}
 	         		
 	           if(options[3]==1){  /* Case -n */
 	           	     stringstream ss;  
